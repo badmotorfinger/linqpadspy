@@ -2,7 +2,7 @@
 
 LINQPadSpy shows decompiled sources from queries which have been compiled by LINQPad allowing one to see any additional compiler generated code.
 
-![LINQPadSpy Screenshot](/vincpa/linqpadspy/linqpadspy.jpg)
+![LINQPadSpy Screenshot](https://github.com/vincpa/linqpadspy/raw/master/LINQPadSpy.JPG)
 
 ### Goals
 
