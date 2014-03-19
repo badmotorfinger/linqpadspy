@@ -18,3 +18,7 @@ Some features I'd like to implement are:
 * A forward and back button.
 * Decompile when the user presses F5. Currently the addition of the `this.DumpDasm()' is required.
 * A tree view displaying all assemblies? Not sure about this one, ILSpy can be quite slow at times and memory consumption is also a worry. Not sure about this.
+
+### Getting the plugin to work
+
+compile the solution and copy the binaries to the LINQPad plugins directory . be sure to copy the .exe files except for LINQPad. exe 
