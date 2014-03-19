@@ -2,6 +2,8 @@
 
 LINQPadSpy shows decompiled sources from queries which have been compiled by LINQPad allowing one to see any additional compiler generated code.
 
+![LINQPadSpy Screenshot](/vincpa/linqpadspy/linqpadspy.jpg)
+
 ### Goals
 
 Gain a deeper understanding of the C# language and compiler with LINQPad.
