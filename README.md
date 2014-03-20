@@ -24,9 +24,14 @@ Some features I'd like to implement are:
 
 ### Getting the plugin to work
 
-Compile the solution and copy the binaries to the LINQPad plugins directory. Be sure to copy the .exe files except for LINQPad.exe.
+First you'll need to open the solution up in Visual Studio 2012/2013 and add reference to the LinqPadSpy project which points to the LINQPad.exe executable. Then compile the solution and copy the binaries to the LINQPad plugins directory. Be sure to copy all DLL and EXE files except for LINQPad.exe.
 
 ### Compatibility
 
 * .NET 4
 * Tested with LINQPad 4.48.01 (Any CPU)
+
+### Known issues
+
+* On occasion you'll get a COM interop exception.
+* The first decompilation can be slow but will be quicker thereafter.
