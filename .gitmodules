@@ -1,3 +1,4 @@
 [submodule "ilspy"]
 	path = ilspy
 	url = https://github.com/vincpa/ILSpy.git
+	branch = linqpadspy
