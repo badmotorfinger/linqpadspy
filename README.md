@@ -25,7 +25,7 @@ Some features I'd like to implement are:
 
 ### Getting the plugin to work
 
-First you'll need to open the solution up in Visual Studio 2012/2013 and add reference to the LinqPadSpy project which points to the LINQPad.exe executable. Then compile the solution and copy the binaries to the LINQPad plugins directory. Be sure to copy all DLL and EXE files except for LINQPad.exe.
+First you'll need to open the solution up in Visual Studio 2012/2013 and add reference to the LinqPadSpy project which points to the LINQPad.exe executable. Then compile the solution (In Release mode) and copy the binaries to the LINQPad plugins directory. Be sure to copy all DLL and EXE files except for LINQPad.exe.
 
 ### Compatibility
 
