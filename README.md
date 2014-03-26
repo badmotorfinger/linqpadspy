@@ -10,14 +10,13 @@ Gain a deeper understanding of the C# language and compiler with LINQPad.
 
 ### Getting started and contributing
 
-I haven't really put much thought in to contributions. Frankly I don't even know if anyone else thinks it's useful. Until I recieve some feedback or recieve some interest, i'll consider it a personal project.
-
 Currently the implementation is a bit of a hack. I've made some small changes to a fork of ILSpy and am re-using the UI text view control and all of ILSpy's built in functionality. I expect the quality of code to improve should there be more interest or I have more spare time available.
+
+If you'd like to contribute to the project then grab a task from the [public Trello board](https://trello.com/b/l9qDZ4t9/linqpadspy) and leave a comment on the card so I know you're working on it.
 
 Some features I'd like to implement are:
 
 * The ability to click on types which are not part of the LINQPad generated assembly and have them decompiled. ILSpy does currently do this, but due to it's tight coupling and dependence on WPF's static classes and properties, a lot of the current functionality doesn't work. Idealy, refactoring the fork of ILSpy in such a way that upstream merges from the main project do not cause merge conflicts would be a preferable approach.
-* Ability to 'detect' which language in LINQPad was used so as to show the same decompiled language. Currently any code written in VB.NET is decompiled to C#.
 * A forward and back button.
 * Decompile when the user presses F5. With the current implementation you need to add `this.DumpDasm()' somewhere in your main method.
 * Merge all assemblies with ILMerge in order to make deployment easier and to not polute the LINQPad plugins directory.
