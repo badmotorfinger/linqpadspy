@@ -45,7 +45,9 @@
 
             var decompilerTextView = new DecompilerTextView(App.CompositionContainer, composeParts: true);
 
-            decompilerTextView.Decompile(new CSharpLanguage(), typesToDecompile, new DecompilationOptions());
+            var linqPadSelectedLanguage = LinqPadUtil.GetLanguageForQuery();
+
+            decompilerTextView.Decompile(linqPadSelectedLanguage, typesToDecompile, new DecompilationOptions());
 
             return decompilerTextView;
         }
