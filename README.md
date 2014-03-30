@@ -20,6 +20,7 @@ Some features I'd like to implement are:
 * A forward and back button.
 * Decompile when the user presses F5. With the current implementation you need to add `this.DumpDasm()' somewhere in your main method.
 * Merge all assemblies with ILMerge in order to make deployment easier and to not polute the LINQPad plugins directory.
+* Get hover over tooltips working again.
 * A tree view displaying all assemblies? Not sure about this one, ILSpy can be quite slow at times and memory consumption is also a worry. The screen real estate is also limited. Consider this a note.
 
 ### Getting the plugin to work
