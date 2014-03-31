@@ -25,7 +25,13 @@ Some features I'd like to implement are:
 
 ### Getting the plugin to work
 
-First you'll need to open the solution up in Visual Studio 2012/2013 and add reference to the LinqPadSpy project which points to the LINQPad.exe executable. Then compile the solution (In Release mode) and copy the binaries to the LINQPad plugins directory. Be sure to copy all DLL and EXE files except for LINQPad.exe.
+1. Clone the repository `git clone --recursive https://github.com/vincpa/linqpadspy.git`
+
+2. cd in to the ilspy directory `cd path\to\cloned\repository\ilspy`
+
+3. Set the correct HEAD revision for the linqpadspy branch `git checkout linqpadspy`
+
+4. Open the solution in Visual Studio 2012/2013 and add reference to LINQPad.exe to the the LinqPadSpy project. Then compile the solution in Release mode and copy the binaries to the LINQPad plugins directory. Be sure to copy all DLL and EXE files except for LINQPad.exe.
 
 ### Compatibility
 
