@@ -1,16 +1,13 @@
 ﻿namespace LinqPadSpy
 {
+    using ICSharpCode.ILSpy;
+    using ICSharpCode.ILSpy.TextView;
+    using ICSharpCode.ILSpy.TreeNodes;
+    using Mono.Cecil;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
-    using System.Windows.Media;
-
-    using ICSharpCode.ILSpy;
-    using ICSharpCode.ILSpy.TextView;
-    using ICSharpCode.ILSpy.TreeNodes;
-
-    using Mono.Cecil;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -81,10 +78,8 @@
 }
 namespace LINQPad
 {
-    using System;
     using System.IO;
     using System.Linq;
-    using System.Net.Mime;
     using System.Windows;
 
     public static class LinqPadSpyExtensions
