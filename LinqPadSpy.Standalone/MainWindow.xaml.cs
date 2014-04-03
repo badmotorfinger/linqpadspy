@@ -40,9 +40,9 @@
 
             var typesToDecompile = GetModuleTypes(mainModule, assemblyTreeNode);
 
-            var decompilerTextView = new DecompilerTextView(CompositionContainerBuilder.Container);
-
             var linqPadSelectedLanguage = LinqPadUtil.GetLanguageForQuery();
+
+            var decompilerTextView = new DecompilerTextView(CompositionContainerBuilder.Container, linqPadSelectedLanguage);
 
             decompilerTextView.Decompile(linqPadSelectedLanguage, typesToDecompile, new DecompilationOptions());
 
