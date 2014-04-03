@@ -14,13 +14,17 @@ Currently the implementation is a bit of a hack. I've made some small changes to
 
 If you'd like to contribute to the project then grab a task from the [public Trello board](https://trello.com/b/l9qDZ4t9/linqpadspy) and leave a comment on the card so I know you're working on it.
 
-Some features I'd like to implement are:
+#### Current feature set
+* Decompiles source code when the query contains a `this.DumpDasm()` (C#) or `Me.DumpDasm()` (VB) in the execution path. You can also decompile F# but the decompiled source will be C#.
+* Detects which language is being used in LINQPad and shows the decompiled source in that language. Currently only VB.NET and C# are supported.
+* Displays tooltips when the mouse hovers over a type.
+
+#### Features I'd like to implement:
 
 * The ability to click on types which are not part of the LINQPad generated assembly and have them decompiled. ILSpy does currently do this, but due to it's tight coupling and dependence on WPF's static classes and properties, a lot of the current functionality doesn't work. Idealy, refactoring the fork of ILSpy in such a way that upstream merges from the main project do not cause merge conflicts would be a preferable approach.
 * A forward and back button.
 * Decompile when the user presses F5. With the current implementation you need to add `this.DumpDasm()' somewhere in your main method.
 * Merge all assemblies with ILMerge in order to make deployment easier and to not polute the LINQPad plugins directory.
-* Get hover over tooltips working again.
 * A tree view displaying all assemblies? Not sure about this one, ILSpy can be quite slow at times and memory consumption is also a worry. The screen real estate is also limited. Consider this a note.
 
 ### Getting the plugin to work
