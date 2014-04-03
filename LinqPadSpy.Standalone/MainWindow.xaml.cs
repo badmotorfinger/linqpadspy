@@ -93,6 +93,8 @@ namespace LINQPad
         {
             if (value == null) return;
 
+            value.Dump(); // Execute LINQPads standard dump.
+
             var linqpadQueryAssemblyPath = GetLastLinqPadQueryAssembly();
 
             using (var decompilerTextView = LinqPadSpy.MainWindow.GetDecompilerTextView(linqpadQueryAssemblyPath, new Application()))
