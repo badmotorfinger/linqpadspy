@@ -1,5 +1,6 @@
 ﻿namespace LinqPadSpy
 {
+    using System.IO;
     using System.Linq;
     using System.Windows.Automation;
 
@@ -46,6 +47,25 @@
             if (selp.Current.GetSelection().First().Current.Name.Contains("VB")) return new VBLanguage();
 
             return new CSharpLanguage();
+        }
+
+        /// <summary>
+        /// Gets the last compiled and executed LINQPad query assembly.
+        /// </summary>
+        /// <returns>A path to the assembly.</returns>
+        public static string GetLastLinqPadQueryAssembly()
+        {
+            var tempPath = Path.Combine(Path.GetTempPath(), "linqpad");
+
+            var linqpadDirectory = new DirectoryInfo(tempPath);
+
+            var latestDirectory =
+                linqpadDirectory.GetDirectories().OrderByDescending(dir => dir.LastWriteTime).First();
+
+            var latestQuery =
+                latestDirectory.GetFiles().OrderByDescending(file => file.LastWriteTimeUtc).First();
+
+            return latestQuery.FullName;
         }
     }
 }

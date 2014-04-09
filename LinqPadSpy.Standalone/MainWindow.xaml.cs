@@ -3,6 +3,9 @@
     using ICSharpCode.ILSpy;
     using ICSharpCode.ILSpy.TextView;
     using ICSharpCode.ILSpy.TreeNodes;
+
+    using LinqPadSpy.Controls;
+
     using Mono.Cecil;
     using System;
     using System.Collections.Generic;
@@ -20,7 +23,7 @@
         {
             this.InitializeComponent();
 
-            this.Content = GetDecompilerTextView(LINQPad.LinqPadSpyExtensions.GetLastLinqPadQueryAssembly());
+            this.Content = GetDecompilerTextView(LinqPadUtil.GetLastLinqPadQueryAssembly());
         }
 
         public static DecompilerTextView GetDecompilerTextView(string assemblyPath)
@@ -28,7 +31,7 @@
             return GetDecompilerTextView(assemblyPath, Application.Current);
         }
 
-        public static DecompilerTextView GetDecompilerTextView(string assemblyPath, System.Windows.Application currenApplication)
+        public static DecompilerTextView GetDecompilerTextView(string assemblyPath, Application currenApplication)
         {
             var loadedAssembly = LoadAssembly(assemblyPath, currenApplication);
 
@@ -78,9 +81,9 @@
 }
 namespace LINQPad
 {
-    using System.IO;
-    using System.Linq;
     using System.Windows;
+
+    using LinqPadSpy;
 
     public static class LinqPadSpyExtensions
     {
@@ -90,27 +93,12 @@ namespace LINQPad
 
             value.Dump(); // Execute LINQPads standard dump.
 
-            var linqpadQueryAssemblyPath = GetLastLinqPadQueryAssembly();
+            var linqpadQueryAssemblyPath = LinqPadUtil.GetLastLinqPadQueryAssembly();
 
             using (var decompilerTextView = LinqPadSpy.MainWindow.GetDecompilerTextView(linqpadQueryAssemblyPath, new Application()))
             {
                 PanelManager.DisplayWpfElement(decompilerTextView, "Decompiled");
             }
-        }
-
-        public static string GetLastLinqPadQueryAssembly()
-        {
-            var tempPath = Path.Combine(Path.GetTempPath(), "linqpad");
-
-            var linqpadDirectory = new DirectoryInfo(tempPath);
-
-            var latestDirectory =
-                linqpadDirectory.GetDirectories().OrderByDescending(dir => dir.LastWriteTime).First();
-
-            var latestQuery =
-                latestDirectory.GetFiles().OrderByDescending(file => file.LastWriteTimeUtc).First();
-
-            return latestQuery.FullName;
         }
     }
 }

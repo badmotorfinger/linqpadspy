@@ -106,10 +106,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ilspy\ILSpy.SharpDevelop.LGPL\ILSpy.SharpDevelop.LGPL.csproj">
-      <Project>{704F66F1-5C7F-4326-A7AA-C604A3896D4E}</Project>
-      <Name>ILSpy.SharpDevelop.LGPL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ilspy\ILSpy\ILSpy.csproj">
       <Project>{1E85EFF9-E370-4683-83E4-8A3D063FF791}</Project>
       <Name>ILSpy</Name>
