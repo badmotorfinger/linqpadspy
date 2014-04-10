@@ -1,5 +1,7 @@
 ﻿namespace LinqPadSpy
 {
+    using System.ComponentModel.Composition;
+
     using ICSharpCode.ILSpy;
     using ICSharpCode.ILSpy.TextView;
     using ICSharpCode.ILSpy.TreeNodes;
@@ -45,7 +47,9 @@
 
             var linqPadSelectedLanguage = LinqPadUtil.GetLanguageForQuery();
 
-            var decompilerTextView = new DecompilerTextView(CompositionContainerBuilder.Container, linqPadSelectedLanguage);
+            var decompilerTextView = new DecompilerTextView();
+
+            CompositionContainerBuilder.Container.ComposeParts(decompilerTextView);
 
             decompilerTextView.Decompile(linqPadSelectedLanguage, typesToDecompile, new DecompilationOptions());
 
