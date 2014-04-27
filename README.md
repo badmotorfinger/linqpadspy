@@ -15,9 +15,11 @@ Currently the implementation is a bit of a hack. I've made some small changes to
 If you'd like to contribute to the project then grab a task from the [public Trello board](https://trello.com/b/l9qDZ4t9/linqpadspy) and leave a comment on the card so I know you're working on it.
 
 #### Current feature set
-* Decompiles source code when the query contains a `this.DumpDasm()` (C#) or `Me.DumpDasm()` (VB) in the execution path. You can also decompile F# but the decompiled source will be C#.
+* Decompiles source code when the query contains a `this.DumpDasm()` (C#) or `Me.DumpDasm()` (VB) in the execution path. You can also decompile an F# compiled assembly but the decompiled source will be in C#.
 * Detects which language is being used in LINQPad and shows the decompiled source in that language. Currently only VB.NET and C# are supported.
 * Displays tooltips when the mouse hovers over a type.
+* Ability to change the decompiled source language from C# to VB.NET or IL without rerunning your query.
+* Remembers position of split pane (not really a feature :/)
 
 #### Features I'd like to implement:
 
@@ -45,4 +47,5 @@ If you'd like to contribute to the project then grab a task from the [public Tre
 ### Known issues
 
 * On occasion you'll get a COM interop exception.
+* Selecting mscorlib from the assembly list will generate an exception.
 * The first decompilation can be slow but will be quicker thereafter.
