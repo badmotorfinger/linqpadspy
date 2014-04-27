@@ -114,7 +114,13 @@
         }
 
         void MainWindowLoaded(object sender, RoutedEventArgs e)
-		{		
+		{ 
+            if (sessionSettings.SplitterPosition > 0 && sessionSettings.SplitterPosition < 1)
+            {
+                leftColumn.Width = new GridLength(sessionSettings.SplitterPosition, GridUnitType.Star);
+                rightColumn.Width = new GridLength(1 - sessionSettings.SplitterPosition, GridUnitType.Star);
+            }
+
 			ShowAssemblyList();
 		}
 
