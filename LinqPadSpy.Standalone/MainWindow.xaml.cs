@@ -1,17 +1,7 @@
 ﻿namespace LinqPadSpy
 {
-    using System.ComponentModel.Composition;
-
-    using ICSharpCode.ILSpy;
-    using ICSharpCode.ILSpy.TextView;
-    using ICSharpCode.ILSpy.TreeNodes;
-
     using LinqPadSpy.Controls;
 
-    using Mono.Cecil;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Windows;
 
     /// <summary>
@@ -25,59 +15,7 @@
         {
             this.InitializeComponent();
 
-            this.Content = GetDecompilerTextView(LinqPadUtil.GetLastLinqPadQueryAssembly());
-        }
-
-        public static DecompilerTextView GetDecompilerTextView(string assemblyPath)
-        {
-            return GetDecompilerTextView(assemblyPath, Application.Current);
-        }
-
-        public static DecompilerTextView GetDecompilerTextView(string assemblyPath, Application currenApplication)
-        {
-            var loadedAssembly = LoadAssembly(assemblyPath, currenApplication);
-
-            var assemblyDefinition = GetAssemblyDefinition(loadedAssembly);
-
-            var mainModule = assemblyDefinition.MainModule;
-
-            var assemblyTreeNode = new AssemblyTreeNode(loadedAssembly);
-
-            var typesToDecompile = GetModuleTypes(mainModule, assemblyTreeNode);
-
-            var linqPadSelectedLanguage = LinqPadUtil.GetLanguageForQuery();
-
-            var decompilerTextView = new DecompilerTextView();
-
-            CompositionContainerBuilder.Container.ComposeParts(decompilerTextView);
-
-            decompilerTextView.Decompile(linqPadSelectedLanguage, typesToDecompile, new DecompilationOptions());
-
-            return decompilerTextView;
-        }
-
-        static LoadedAssembly LoadAssembly(string assemblyPath, Application currenApplication)
-        {
-            var assemblyList = new AssemblyList("LINQPadList");
-
-            return new LoadedAssembly(assemblyList, assemblyPath, currenApplication);
-        }
-
-        static AssemblyDefinition GetAssemblyDefinition(LoadedAssembly loadedAssembly)
-        {
-            var asmDef = loadedAssembly.AssemblyDefinition;
-
-            if (asmDef == null)
-            {
-                throw new InvalidOperationException("Could not load for some reason.");
-            }
-
-            return asmDef;
-        }
-
-        static IEnumerable<TypeTreeNode> GetModuleTypes(ModuleDefinition mainModule, AssemblyTreeNode assemblyTreeNode)
-        {
-            return mainModule.Types.OrderBy(t => t.FullName).Select(type => new TypeTreeNode(type, assemblyTreeNode));
+            this.Content = new LinqPadSpyContainer(Application.Current, LinqPadUtil.GetLanguageForQuery());
         }
 
         #endregion
@@ -87,7 +25,10 @@ namespace LINQPad
 {
     using System.Windows;
 
+    using ICSharpCode.ILSpy;
+
     using LinqPadSpy;
+    using LinqPadSpy.Controls;
 
     public static class LinqPadSpyExtensions
     {
@@ -97,12 +38,12 @@ namespace LINQPad
 
             value.Dump(); // Execute LINQPads standard dump.
 
-            var linqpadQueryAssemblyPath = LinqPadUtil.GetLastLinqPadQueryAssembly();
+            // Determine the language (Doesn't work when two copies of LINQPad are open)
+            Language linqPadSelectedLanguage = LinqPadUtil.GetLanguageForQuery();
 
-            using (var decompilerTextView = LinqPadSpy.MainWindow.GetDecompilerTextView(linqpadQueryAssemblyPath, new Application()))
-            {
-                PanelManager.DisplayWpfElement(decompilerTextView, "Decompiled");
-            }
+            var linqpadSpyPanel = new LinqPadSpyContainer(new Application(), linqPadSelectedLanguage);
+
+            PanelManager.DisplayWpfElement(linqpadSpyPanel, "Decompiled");
         }
     }
 }

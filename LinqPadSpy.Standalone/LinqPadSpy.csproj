@@ -61,6 +61,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\LinqPadSpyContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -71,6 +75,9 @@
     </Compile>
     <Compile Include="CompositionContainerBuilder.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controls\LinqPadSpyContainer.xaml.cs">
+      <DependentUpon>LinqPadSpyContainer.xaml</DependentUpon>
     </Compile>
     <Compile Include="LinqPadUtil.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -106,6 +113,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ilspy\ICSharpCode.Decompiler\ICSharpCode.Decompiler.csproj">
+      <Project>{984CC812-9470-4A13-AFF9-CC44068D666C}</Project>
+      <Name>ICSharpCode.Decompiler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ilspy\ILSpy\ILSpy.csproj">
       <Project>{1E85EFF9-E370-4683-83E4-8A3D063FF791}</Project>
       <Name>ILSpy</Name>
