@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Linqpadspy by vincpa</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Linqpadspy</h1>
+        <h2>A plugin for LINQPad which displays compiler generated code in C#, VB.NET or IL.</h2>
+        <a href="https://github.com/vincpa/linqpadspy" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h2>
+<a name="linqpadspy" class="anchor" href="#linqpadspy"><span class="octicon octicon-link"></span></a>LINQPadSpy</h2>
+
+<p>LINQPadSpy shows decompiled sources from queries which have been compiled by LINQPad allowing one to see any additional compiler generated code.</p>
+
+<p><img src="https://github.com/vincpa/linqpadspy/raw/master/LINQPadSpy.JPG" alt="LINQPadSpy Screenshot"></p>
+
+<h3>
+<a name="goals" class="anchor" href="#goals"><span class="octicon octicon-link"></span></a>Goals</h3>
+
+<p>Gain a deeper understanding of the C# language and compiler with LINQPad.</p>
+
+<h3>
+<a name="getting-started-and-contributing" class="anchor" href="#getting-started-and-contributing"><span class="octicon octicon-link"></span></a>Getting started and contributing</h3>
+
+<p>Currently the implementation is a bit of a hack. I've made some small changes to a fork of ILSpy and am re-using the UI text view control and all of ILSpy's built in functionality. I expect the quality of code to improve should there be more interest or I have more spare time available.</p>
+
+<p>If you'd like to contribute to the project then grab a task from the <a href="https://trello.com/b/l9qDZ4t9/linqpadspy">public Trello board</a> and leave a comment on the card so I know you're working on it.</p>
+
+<h4>
+<a name="current-feature-set" class="anchor" href="#current-feature-set"><span class="octicon octicon-link"></span></a>Current feature set</h4>
+
+<ul>
+<li>Decompiles source code when the query contains a <code>this.DumpDasm()</code> (C#) or <code>Me.DumpDasm()</code> (VB) in the execution path. You can also decompile an F# compiled assembly but the decompiled source will be in C#.</li>
+<li>Detects which language is being used in LINQPad and shows the decompiled source in that language. Currently only VB.NET and C# are supported.</li>
+<li>Displays tooltips when the mouse hovers over a type.</li>
+<li>Ability to change the decompiled source language from C# to VB.NET or IL without rerunning your query.</li>
+<li>Remembers position of split pane in LINQPad.</li>
+<li>Display class heirarchy.</li>
+</ul><h4>
+<a name="features-id-like-to-implement" class="anchor" href="#features-id-like-to-implement"><span class="octicon octicon-link"></span></a>Features I'd like to implement:</h4>
+
+<ul>
+<li>The ability to click on types which are not part of the LINQPad generated assembly and have them decompiled. ILSpy does currently do this, but due to it's tight coupling and dependence on WPF's static classes and properties, a lot of the current functionality doesn't work. Idealy, refactoring the fork of ILSpy in such a way that upstream merges from the main project do not cause merge conflicts would be a preferable approach.</li>
+<li>A forward and back button.</li>
+<li>Decompile when the user presses F5. With the current implementation you need to add `this.DumpDasm()' somewhere in your main method.</li>
+<li>Merge all assemblies with ILMerge in order to make deployment easier and to not polute the LINQPad plugins directory.</li>
+</ul><h3>
+<a name="getting-the-plugin-to-work" class="anchor" href="#getting-the-plugin-to-work"><span class="octicon octicon-link"></span></a>Getting the plugin to work</h3>
+
+<ol>
+<li><p>Clone the repository <code>git clone --recursive https://github.com/vincpa/linqpadspy.git</code></p></li>
+<li><p>cd in to the ilspy directory <code>cd path\to\cloned\repository\ilspy</code></p></li>
+<li><p>Set the correct HEAD revision for the linqpadspy branch <code>git checkout linqpadspy</code></p></li>
+<li><p>Open the solution in Visual Studio 2012/2013 and add reference to LINQPad.exe to the the LinqPadSpy project. Then compile the solution in Release mode and copy the binaries to the LINQPad plugins directory. Be sure to copy all DLL and EXE files except for LINQPad.exe.</p></li>
+</ol><h3>
+<a name="compatibility" class="anchor" href="#compatibility"><span class="octicon octicon-link"></span></a>Compatibility</h3>
+
+<ul>
+<li>.NET 4</li>
+<li>Tested with LINQPad 4.48.01 (Any CPU)</li>
+</ul><h3>
+<a name="known-issues" class="anchor" href="#known-issues"><span class="octicon octicon-link"></span></a>Known issues</h3>
+
+<ul>
+<li>On occasion you'll get a COM interop exception.</li>
+<li>Selecting mscorlib from the assembly list will generate an exception.</li>
+<li>The first decompilation can be slow but will be quicker thereafter.</li>
+</ul>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/vincpa/linqpadspy/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/vincpa/linqpadspy/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/vincpa/linqpadspy"></a> is maintained by <a href="https://github.com/vincpa">vincpa</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-50434187-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
