@@ -1,4 +1,4 @@
-﻿namespace LinqPadSpy.Controls
+﻿namespace LinqPadSpy.Plugin.Controls
 {
     using System.Collections.Specialized;
     using System.ComponentModel;

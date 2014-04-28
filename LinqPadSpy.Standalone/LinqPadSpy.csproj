@@ -7,8 +7,8 @@
     <ProjectGuid>{B2A8BB5A-2C47-4B6A-943C-44658BCEF07C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinqPadSpy</RootNamespace>
-    <AssemblyName>LinqPadSpy</AssemblyName>
+    <RootNamespace>LinqPadSpy.Standalone</RootNamespace>
+    <AssemblyName>LinqPadSpy.Standalone</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -39,19 +39,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LINQPad">
-      <HintPath>C:\Users\Vince\SkyDrive\tools\LINQPad\LINQPad.exe</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="UIAutomationClient" />
-    <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -61,10 +54,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Controls\LinqPadSpyContainer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -73,13 +62,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CompositionContainerBuilder.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Controls\LinqPadSpyContainer.xaml.cs">
-      <DependentUpon>LinqPadSpyContainer.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="LinqPadUtil.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -113,21 +95,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ilspy\ICSharpCode.Decompiler\ICSharpCode.Decompiler.csproj">
-      <Project>{984CC812-9470-4A13-AFF9-CC44068D666C}</Project>
-      <Name>ICSharpCode.Decompiler</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ilspy\ILSpy\ILSpy.csproj">
       <Project>{1E85EFF9-E370-4683-83E4-8A3D063FF791}</Project>
       <Name>ILSpy</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ilspy\Mono.Cecil\Mono.Cecil.csproj">
-      <Project>{D68133BD-1E63-496E-9EDE-4FBDBF77B486}</Project>
-      <Name>Mono.Cecil</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ilspy\SharpTreeView\ICSharpCode.TreeView.csproj">
-      <Project>{DDE2A481-8271-4EAC-A330-8FA6A38D13D1}</Project>
-      <Name>ICSharpCode.TreeView</Name>
+    <ProjectReference Include="..\LinqPadSpy.Plugin\LinqPadSpy.Plugin.csproj">
+      <Project>{46FC3B80-15B0-4E1C-BE40-3BFF5981C474}</Project>
+      <Name>LinqPadSpy.Plugin</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

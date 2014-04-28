@@ -1,8 +1,10 @@
-﻿namespace LinqPadSpy
+﻿namespace LinqPadSpy.Plugin
 {
     using System.ComponentModel.Composition.Hosting;
     using System.IO;
     using System.Reflection;
+
+    using ICSharpCode.ILSpy;
 
     public static class CompositionContainerBuilder
     {

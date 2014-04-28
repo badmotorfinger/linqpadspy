@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode.NRefactory.CSha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqPadSpy", "LinqPadSpy.csproj", "{B2A8BB5A-2C47-4B6A-943C-44658BCEF07C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqPadSpy.Plugin", "..\LinqPadSpy.Plugin\LinqPadSpy.Plugin.csproj", "{46FC3B80-15B0-4E1C-BE40-3BFF5981C474}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
