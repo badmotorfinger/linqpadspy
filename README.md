@@ -19,7 +19,8 @@ If you'd like to contribute to the project then grab a task from the [public Tre
 * Detects which language is being used in LINQPad and shows the decompiled source in that language. Currently only VB.NET and C# are supported.
 * Displays tooltips when the mouse hovers over a type.
 * Ability to change the decompiled source language from C# to VB.NET or IL without rerunning your query.
-* Remembers position of split pane (not really a feature :/)
+* Remembers position of split pane in LINQPad.
+* Display class heirarchy.
 
 #### Features I'd like to implement:
 
@@ -27,7 +28,6 @@ If you'd like to contribute to the project then grab a task from the [public Tre
 * A forward and back button.
 * Decompile when the user presses F5. With the current implementation you need to add `this.DumpDasm()' somewhere in your main method.
 * Merge all assemblies with ILMerge in order to make deployment easier and to not polute the LINQPad plugins directory.
-* A tree view displaying all assemblies? Not sure about this one, ILSpy can be quite slow at times and memory consumption is also a worry. The screen real estate is also limited. Consider this a note.
 
 ### Getting the plugin to work
 
