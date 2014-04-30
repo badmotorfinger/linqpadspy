@@ -157,10 +157,10 @@
             ICSharpCode.ILSpy.App.CompositionContainer = CompositionContainerBuilder.Container;
 
             // A hack to get around the global shared state of the Window object throughout ILSpy.
-            ICSharpCode.ILSpy.MainWindow.SpyWindow = this; 
+            ICSharpCode.ILSpy.MainWindow.SpyWindow = this;
 
             this.spySettings = ILSpySettings.Load();
-            
+
             this.sessionSettings = new SessionSettings(this.spySettings)
             {
                 ActiveAssemblyList = this.CurrentAssemblyList.ListName
@@ -168,7 +168,7 @@
 
             SetUpDataContext();
 
-            this.assemblyPath = LinqPadUtil.GetLastLinqPadQueryAssembly(); 
+            this.assemblyPath = LinqPadUtil.GetLastLinqPadQueryAssembly();
 
             this.decompilerTextView = GetDecompilerTextView();
 
@@ -180,15 +180,15 @@
         }
 
         void MainWindowLoaded(object sender, RoutedEventArgs e)
-		{ 
+        {
             if (sessionSettings.SplitterPosition > 0 && sessionSettings.SplitterPosition < 1)
             {
                 leftColumn.Width = new GridLength(sessionSettings.SplitterPosition, GridUnitType.Star);
                 rightColumn.Width = new GridLength(1 - sessionSettings.SplitterPosition, GridUnitType.Star);
             }
 
-			ShowAssemblyList();
-		}
+            ShowAssemblyList();
+        }
 
         void ShowAssemblyList()
         {
@@ -213,7 +213,7 @@
             if (e.OldItems != null)
             {
                 var oldAssemblies = new HashSet<LoadedAssembly>(e.OldItems.Cast<LoadedAssembly>());
-                
+
                 //history.RemoveAll(n => n.TreeNodes.Any(
                 //    nd => nd.AncestorsAndSelf().OfType<AssemblyTreeNode>().Any(
                 //        a => oldAssemblies.Contains(a.LoadedAssembly))));
@@ -226,58 +226,63 @@
             DecompileSelectedNodes(treeView.GetTopLevelSelection().OfType<ILSpyTreeNode>());
         }
 
-        internal void SelectNode(SharpTreeNode obj)
-		{
-			if (obj != null) {
-				if (!obj.AncestorsAndSelf().Any(node => node.IsHidden)) {
-					// Set both the selection and focus to ensure that keyboard navigation works as expected.
-					treeView.FocusNode(obj);
-					treeView.SelectedItem = obj;
-				} else {
-					MessageBox.Show("Navigation failed because the target is hidden or a compiler-generated class.\n" +
-						"Please disable all filters that might hide the item (i.e. activate " +
-						"\"View > Show internal types and members\") and try again.",
-						"ILSpy", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-				}
-			}
-		}
+        void SelectNode(SharpTreeNode obj)
+        {
+            if (obj != null)
+            {
+                if (!obj.AncestorsAndSelf().Any(node => node.IsHidden))
+                {
+                    // Set both the selection and focus to ensure that keyboard navigation works as expected.
+                    treeView.FocusNode(obj);
+                    treeView.SelectedItem = obj;
+                }
+                else
+                {
+                    MessageBox.Show("Navigation failed because the target is hidden or a compiler-generated class.\n" +
+                        "Please disable all filters that might hide the item (i.e. activate " +
+                        "\"View > Show internal types and members\") and try again.",
+                        "ILSpy", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+        }
 
         void SetUpDataContext()
-        {            
-			sessionSettings.FilterSettings.PropertyChanged += filterSettings_PropertyChanged;
+        {
+            sessionSettings.FilterSettings.PropertyChanged += filterSettings_PropertyChanged;
 
             this.DataContext = sessionSettings;
         }
 
         void filterSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == "Language")
-			{
-			    this.decompiledLanguage = ((FilterSettings)sender).Language;
+        {
+            if (e.PropertyName == "Language")
+            {
+                this.decompiledLanguage = ((FilterSettings)sender).Language;
 
                 DecompileSelectedNodes(treeView.GetTopLevelSelection().OfType<ILSpyTreeNode>());
-			}
-		}
+            }
+        }
 
         void DecompileSelectedNodes(IEnumerable<ILSpyTreeNode> nodes, DecompilerTextViewState state = null, bool recordHistory = true)
-		{	
+        {
             //if (recordHistory) {
             //    var dtState = decompilerTextView.GetState();
             //    if(dtState != null)
             //        history.UpdateCurrent(new NavigationState(dtState));
             //    history.Record(new NavigationState(treeView.SelectedItems.OfType<SharpTreeNode>()));
             //}
-			
-			if (treeView.SelectedItems.Count == 1) {
-				var node = treeView.SelectedItem as ILSpyTreeNode;
-				if (node != null && node.View(decompilerTextView))
-					return;
-			} 
+
+            if (treeView.SelectedItems.Count == 1)
+            {
+                var node = treeView.SelectedItem as ILSpyTreeNode;
+                if (node != null && node.View(decompilerTextView))
+                    return;
+            }
 
             //Options.TextViewState = state
 
-			decompilerTextView.Decompile(this.decompiledLanguage, nodes, Options);
-		}
+            decompilerTextView.Decompile(this.decompiledLanguage, nodes, Options);
+        }
 
         DecompilerTextView GetDecompilerTextView()
         {
@@ -322,7 +327,7 @@
 
             return mainModule.Types.OrderBy(t => t.FullName).Select(type => new TypeTreeNode(type, assemblyTreeNode));
         }
-        
+
         void Thumb_OnDragCompleted(object sender, DragCompletedEventArgs e)
         {
             sessionSettings.SplitterPosition = leftColumn.Width.Value / (leftColumn.Width.Value + rightColumn.Width.Value);
