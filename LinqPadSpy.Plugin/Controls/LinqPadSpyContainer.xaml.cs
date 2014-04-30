@@ -2,6 +2,7 @@
 {
     using System.Collections.Specialized;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Windows.Controls;
     using System;
     using System.Collections.Generic;
@@ -23,6 +24,13 @@
     /// </summary>
     public partial class LinqPadSpyContainer : UserControl, ISpyWindow
     {
+        /// <summary>
+        /// Gets the decompilation options. There should be no need to change these as the
+        /// purpose of this plugin is to show what the compiler is generating.
+        /// </summary>
+        /// <value>
+        /// The options.
+        /// </value>
         static DecompilationOptions Options
         {
             get
@@ -56,7 +64,63 @@
 
         public AssemblyList CurrentAssemblyList { get; private set; }
 
-        readonly Language decompiledLanguage;
+        public void JumpToReference(object reference)
+        {
+            ILSpyTreeNode treeNode = FindTreeNode(reference);
+            if (treeNode != null)
+            {
+                SelectNode(treeNode);
+            }
+            else if (reference is Mono.Cecil.Cil.OpCode)
+            {
+                string link = "http://msdn.microsoft.com/library/system.reflection.emit.opcodes." + ((Mono.Cecil.Cil.OpCode)reference).Code.ToString().ToLowerInvariant() + ".aspx";
+                try
+                {
+                    Process.Start(link);
+                }
+                catch
+                {
+
+                }
+            }
+        }
+        public ILSpyTreeNode FindTreeNode(object reference)
+        {
+            if (reference is TypeReference)
+            {
+                return assemblyListTreeNode.FindTypeNode(((TypeReference)reference).Resolve());
+            }
+            else if (reference is MethodReference)
+            {
+                return assemblyListTreeNode.FindMethodNode(((MethodReference)reference).Resolve());
+            }
+            else if (reference is FieldReference)
+            {
+                return assemblyListTreeNode.FindFieldNode(((FieldReference)reference).Resolve());
+            }
+            else if (reference is PropertyReference)
+            {
+                return assemblyListTreeNode.FindPropertyNode(((PropertyReference)reference).Resolve());
+            }
+            else if (reference is EventReference)
+            {
+                return assemblyListTreeNode.FindEventNode(((EventReference)reference).Resolve());
+            }
+            else if (reference is AssemblyDefinition)
+            {
+                return assemblyListTreeNode.FindAssemblyNode((AssemblyDefinition)reference);
+            }
+            else if (reference is ModuleDefinition)
+            {
+                return assemblyListTreeNode.FindAssemblyNode((ModuleDefinition)reference);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        Language decompiledLanguage;
 
         readonly Application currentApplication;
 
@@ -89,6 +153,8 @@
             Languages.Initialize(CompositionContainerBuilder.Container);
 
             this.CurrentAssemblyList = new AssemblyList("LINQPadAssemblyList", this.currentApplication);
+
+            ICSharpCode.ILSpy.App.CompositionContainer = CompositionContainerBuilder.Container;
 
             // A hack to get around the global shared state of the Window object throughout ILSpy.
             ICSharpCode.ILSpy.MainWindow.SpyWindow = this; 
@@ -155,6 +221,10 @@
             if (CurrentAssemblyListChanged != null)
                 CurrentAssemblyListChanged(this, e);
         }
+        void TreeView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DecompileSelectedNodes(treeView.GetTopLevelSelection().OfType<ILSpyTreeNode>());
+        }
 
         internal void SelectNode(SharpTreeNode obj)
 		{
@@ -183,13 +253,13 @@
 		{
 			if (e.PropertyName == "Language")
 			{
-			    var selectedLanguage = ((FilterSettings)sender).Language;
+			    this.decompiledLanguage = ((FilterSettings)sender).Language;
 
-				DecompileSelectedNodes(selectedLanguage);
+                DecompileSelectedNodes(treeView.GetTopLevelSelection().OfType<ILSpyTreeNode>());
 			}
 		}
 
-        void DecompileSelectedNodes(Language language, DecompilerTextViewState state = null, bool recordHistory = true)
+        void DecompileSelectedNodes(IEnumerable<ILSpyTreeNode> nodes, DecompilerTextViewState state = null, bool recordHistory = true)
 		{	
             //if (recordHistory) {
             //    var dtState = decompilerTextView.GetState();
@@ -199,16 +269,14 @@
             //}
 			
 			if (treeView.SelectedItems.Count == 1) {
-				ILSpyTreeNode node = treeView.SelectedItem as ILSpyTreeNode;
+				var node = treeView.SelectedItem as ILSpyTreeNode;
 				if (node != null && node.View(decompilerTextView))
 					return;
-			}
-
-            var typesToDecompile = GetModuleTypes();
+			} 
 
             //Options.TextViewState = state
 
-			decompilerTextView.Decompile(language, typesToDecompile, Options);
+			decompilerTextView.Decompile(this.decompiledLanguage, nodes, Options);
 		}
 
         DecompilerTextView GetDecompilerTextView()
