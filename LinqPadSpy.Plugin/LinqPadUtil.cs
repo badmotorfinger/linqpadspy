@@ -78,7 +78,7 @@
 
 
             var latestQuery =
-                latestDirectory.First().GetFiles().OrderByDescending(file => file.LastWriteTimeUtc).First();
+                latestDirectory.First().GetFiles("*.dll").OrderByDescending(file => file.LastWriteTimeUtc).First();
 
             return latestQuery.FullName;
         }

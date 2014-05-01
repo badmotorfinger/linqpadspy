@@ -25,7 +25,6 @@
                     // see http://stackoverflow.com/questions/8063841/mef-loading-plugins-from-a-network-shared-folder
                     string appPath = Path.GetDirectoryName(typeof(App).Module.FullyQualifiedName);
 
-                    LoadAssemblyByShortName(catalog, "ILSpy");
                     LoadAssemblyByShortName(catalog, "ICSharpCode.AvalonEdit");
 
                     foreach (string plugin in Directory.GetFiles(appPath, "*.Plugin.dll"))

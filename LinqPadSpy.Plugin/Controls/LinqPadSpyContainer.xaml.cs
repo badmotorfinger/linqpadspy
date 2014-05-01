@@ -3,6 +3,7 @@
     using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Reflection;
     using System.Windows.Controls;
     using System;
     using System.Collections.Generic;
@@ -10,6 +11,7 @@
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls.Primitives;
+    using System.Windows.Input;
 
     using ICSharpCode.Decompiler;
     using ICSharpCode.ILSpy;
@@ -55,10 +57,14 @@
                         YieldReturn = false,
                         QueryExpressions = true,
                         SwitchStatementOnString = false
-                    }
+                    },
+                    TextViewState = new DecompilerTextViewState()
                 };
             }
         }
+
+
+		readonly NavigationHistory<NavigationState> history = new NavigationHistory<NavigationState>();
 
         public event NotifyCollectionChangedEventHandler CurrentAssemblyListChanged;
 
@@ -187,14 +193,31 @@
                 rightColumn.Width = new GridLength(1 - sessionSettings.SplitterPosition, GridUnitType.Star);
             }
 
-            ShowAssemblyList();
+            this.ShowAssemblyList();
+            this.SelectLinqPadQueryNode();
+        }
+
+        void SelectLinqPadQueryNode()
+        {
+           
+            var root = ((AssemblyTreeNode)treeView.Items[0]);
+            root.IsExpanded = true;
+            
+            var namespaceNodes =
+                (Dictionary<string, NamespaceTreeNode>)
+                    root.GetType().GetField("namespaces", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(root);
+
+            NamespaceTreeNode linqPadNamespaceNode = namespaceNodes[String.Empty];
+            linqPadNamespaceNode.IsExpanded = true;
+
+            var queryNode = (TypeTreeNode)linqPadNamespaceNode.Children.First(c => String.Equals(c.Text, "UserQuery")); 
+            
+            queryNode.IsExpanded = true;
+            queryNode.IsSelected = true;
         }
 
         void ShowAssemblyList()
         {
-            //history.Clear();
-            //this.assemblyList = assemblyList;
-
             CurrentAssemblyList.assemblies.CollectionChanged += assemblyList_Assemblies_CollectionChanged;
 
             assemblyListTreeNode = new AssemblyListTreeNode(this.CurrentAssemblyList);
@@ -223,7 +246,7 @@
         }
         void TreeView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            DecompileSelectedNodes(treeView.GetTopLevelSelection().OfType<ILSpyTreeNode>());
+            DecompileSelectedNodes();
         }
 
         void SelectNode(SharpTreeNode obj)
@@ -259,18 +282,18 @@
             {
                 this.decompiledLanguage = ((FilterSettings)sender).Language;
 
-                DecompileSelectedNodes(treeView.GetTopLevelSelection().OfType<ILSpyTreeNode>());
+                DecompileSelectedNodes();
             }
         }
 
-        void DecompileSelectedNodes(IEnumerable<ILSpyTreeNode> nodes, DecompilerTextViewState state = null, bool recordHistory = true)
+        void DecompileSelectedNodes(DecompilerTextViewState state = null, bool recordHistory = true)
         {
-            //if (recordHistory) {
-            //    var dtState = decompilerTextView.GetState();
-            //    if(dtState != null)
-            //        history.UpdateCurrent(new NavigationState(dtState));
-            //    history.Record(new NavigationState(treeView.SelectedItems.OfType<SharpTreeNode>()));
-            //}
+            if (recordHistory) {
+                var dtState = decompilerTextView.GetState();
+                if(dtState != null)
+                    history.UpdateCurrent(new NavigationState(dtState));
+                history.Record(new NavigationState(treeView.SelectedItems.OfType<SharpTreeNode>()));
+            }
 
             if (treeView.SelectedItems.Count == 1)
             {
@@ -279,14 +302,24 @@
                     return;
             }
 
-            //Options.TextViewState = state
-
-            decompilerTextView.Decompile(this.decompiledLanguage, nodes, Options);
+            decompilerTextView.Decompile(this.decompiledLanguage, this.SelectedNodes, new DecompilationOptions(){ TextViewState = state });
+        }
+        IEnumerable<ILSpyTreeNode> SelectedNodes
+        {
+            get
+            {
+                // If nothing has been selected in the tree, just show all of the code contained in the query.
+                if (treeView.SelectedItem == null)
+                {
+                    return this.GetDefaultModuleTypes();
+                }
+                return treeView.GetTopLevelSelection().OfType<ILSpyTreeNode>();
+            }
         }
 
         DecompilerTextView GetDecompilerTextView()
         {
-            var typesToDecompile = GetModuleTypes();
+            var typesToDecompile = GetDefaultModuleTypes();
 
             var decomTextView = new DecompilerTextView();
 
@@ -314,7 +347,7 @@
             return asmDef;
         }
 
-        IEnumerable<TypeTreeNode> GetModuleTypes()
+        IEnumerable<TypeTreeNode> GetDefaultModuleTypes()
         {
             // Load assembly metadata
             var loadedAssembly = LoadAssembly();
@@ -325,7 +358,9 @@
 
             var assemblyTreeNode = new AssemblyTreeNode(loadedAssembly);
 
-            return mainModule.Types.OrderBy(t => t.FullName).Select(type => new TypeTreeNode(type, assemblyTreeNode));
+            return mainModule.Types.Where(t => t.Name != "<Module>")
+                                   .OrderBy(t => t.FullName)
+                                   .Select(type => new TypeTreeNode(type, assemblyTreeNode));
         }
 
         void Thumb_OnDragCompleted(object sender, DragCompletedEventArgs e)
@@ -333,5 +368,103 @@
             sessionSettings.SplitterPosition = leftColumn.Width.Value / (leftColumn.Width.Value + rightColumn.Width.Value);
             this.sessionSettings.Save();
         }
+        
+        #region Back/Forward navigation
+		void BackCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.Handled = true;
+			e.CanExecute = history.CanNavigateBack;
+		}
+		
+		void BackCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (history.CanNavigateBack) {
+				e.Handled = true;
+				NavigateHistory(false);
+			}
+		}
+		
+		void ForwardCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.Handled = true;
+			e.CanExecute = history.CanNavigateForward;
+		}
+		
+		void ForwardCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (history.CanNavigateForward) {
+				e.Handled = true;
+				NavigateHistory(true);
+			}
+		}
+		
+		void NavigateHistory(bool forward)
+		{
+			var dtState = decompilerTextView.GetState();
+			if(dtState != null)
+				history.UpdateCurrent(new NavigationState(dtState));
+			var newState = forward ? history.GoForward() : history.GoBack();
+			
+            //ignoreDecompilationRequests = true;
+			treeView.SelectedItems.Clear();
+			foreach (var node in newState.TreeNodes)
+			{
+				treeView.SelectedItems.Add(node);
+			}
+			if (newState.TreeNodes.Any())
+				treeView.FocusNode(newState.TreeNodes.First());
+            //ignoreDecompilationRequests = false;
+			DecompileSelectedNodes(newState.ViewState, false);
+		}
+
+        [ImportMany("ToolbarCommand", typeof(ICommand))]
+        Lazy<ICommand, IToolbarCommandMetadata>[] toolbarCommands = null;
+
+        void InitToolbar()
+        {
+            int navigationPos = 0;
+            int openPos = 1;
+            foreach (var commandGroup in toolbarCommands.OrderBy(c => c.Metadata.ToolbarOrder).GroupBy(c => c.Metadata.ToolbarCategory))
+            {
+                if (commandGroup.Key == "Navigation")
+                {
+                    foreach (var command in commandGroup)
+                    {
+                        toolBar.Items.Insert(navigationPos++, MakeToolbarItem(command));
+                        openPos++;
+                    }
+                }
+                else if (commandGroup.Key == "Open")
+                {
+                    foreach (var command in commandGroup)
+                    {
+                        toolBar.Items.Insert(openPos++, MakeToolbarItem(command));
+                    }
+                }
+                else
+                {
+                    toolBar.Items.Add(new Separator());
+                    foreach (var command in commandGroup)
+                    {
+                        toolBar.Items.Add(MakeToolbarItem(command));
+                    }
+                }
+            }
+
+        }
+		Button MakeToolbarItem(Lazy<ICommand, IToolbarCommandMetadata> command)
+		{
+			return new Button {
+				Command = CommandWrapper.Unwrap(command.Value),
+				ToolTip = command.Metadata.ToolTip,
+				Tag = command.Metadata.Tag,
+				Content = new Image {
+					Width = 16,
+					Height = 16,
+					Source = Images.LoadImage(command.Value, command.Metadata.ToolbarIcon)
+				}
+			};
+		}
+		#endregion
     }
 }
