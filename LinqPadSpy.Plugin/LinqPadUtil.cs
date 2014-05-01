@@ -28,28 +28,33 @@
 
             if (aeForm != null)
             {
-                var windowPane = aeForm.FindAll(TreeScope.Children, Condition.TrueCondition)[0];
+                try
+                {
+                    var windowPane = aeForm.FindAll(TreeScope.Children, Condition.TrueCondition)[0];
 
-                var windowPanes = windowPane.FindAll(TreeScope.Children, Condition.TrueCondition);
+                    var windowPanes = windowPane.FindAll(TreeScope.Children, Condition.TrueCondition);
 
-                var rightOfSplitPane = windowPanes[1];
+                    var rightOfSplitPane = windowPanes[1];
 
-                var tabPane = rightOfSplitPane.FindAll(TreeScope.Children, Condition.TrueCondition)[1];
+                    var tabPane = rightOfSplitPane.FindAll(TreeScope.Children, Condition.TrueCondition)[1];
 
-                var selectedTabPattern = (SelectionPattern)tabPane.GetCurrentPattern(SelectionPattern.Pattern);
+                    var selectedTabPattern = (SelectionPattern)tabPane.GetCurrentPattern(SelectionPattern.Pattern);
 
-                var selectedTab = selectedTabPattern.Current.GetSelection()[0];
+                    var selectedTab = selectedTabPattern.Current.GetSelection()[0];
 
-                var combo =
-                    selectedTab.FindAll(TreeScope.Children, Condition.TrueCondition)[0].FindAll(
-                        TreeScope.Children,
-                        Condition.TrueCondition)[1].FindAll(
+                    var combo =
+                        selectedTab.FindAll(TreeScope.Children, Condition.TrueCondition)[0].FindAll(
                             TreeScope.Children,
-                            new PropertyCondition(AutomationElement.AutomationIdProperty, "cboLanguage"))[0];
+                            Condition.TrueCondition)[1].FindAll(
+                                TreeScope.Children,
+                                new PropertyCondition(AutomationElement.AutomationIdProperty, "cboLanguage"))[0];
 
-                var selp = (SelectionPattern)combo.GetCurrentPattern(SelectionPattern.Pattern);
+                    var selp = (SelectionPattern)combo.GetCurrentPattern(SelectionPattern.Pattern);
 
-                if (selp.Current.GetSelection().First().Current.Name.Contains("VB")) return new VBLanguage();
+                    if (selp.Current.GetSelection().First().Current.Name.Contains("VB")) return new VBLanguage();
+
+                }
+                catch { } // This line disgusts me.
             }
             return new CSharpLanguage();
         }
