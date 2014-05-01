@@ -90,7 +90,8 @@
                 }
             }
         }
-        public ILSpyTreeNode FindTreeNode(object reference)
+
+        ILSpyTreeNode FindTreeNode(object reference)
         {
             if (reference is TypeReference)
             {
@@ -162,6 +163,8 @@
 
             ICSharpCode.ILSpy.App.CompositionContainer = CompositionContainerBuilder.Container;
 
+            CompositionContainerBuilder.Container.ComposeParts(this);
+
             // A hack to get around the global shared state of the Window object throughout ILSpy.
             ICSharpCode.ILSpy.MainWindow.SpyWindow = this;
 
@@ -181,6 +184,8 @@
             InitializeComponent();
 
             this.mainPane.Content = this.decompilerTextView;
+
+            this.InitToolbar();
 
             this.Loaded += new RoutedEventHandler(this.MainWindowLoaded);
         }
@@ -213,11 +218,13 @@
             var queryNode = (TypeTreeNode)linqPadNamespaceNode.Children.First(c => String.Equals(c.Text, "UserQuery")); 
             
             queryNode.IsExpanded = true;
-            queryNode.IsSelected = true;
+
+            treeView.SelectedItems.Add(queryNode);
         }
 
         void ShowAssemblyList()
         {
+            history.Clear();
             CurrentAssemblyList.assemblies.CollectionChanged += assemblyList_Assemblies_CollectionChanged;
 
             assemblyListTreeNode = new AssemblyListTreeNode(this.CurrentAssemblyList);
@@ -231,15 +238,14 @@
         {
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {
-                //history.RemoveAll(_ => true);
+                history.RemoveAll(_ => true);
             }
             if (e.OldItems != null)
             {
                 var oldAssemblies = new HashSet<LoadedAssembly>(e.OldItems.Cast<LoadedAssembly>());
-
-                //history.RemoveAll(n => n.TreeNodes.Any(
-                //    nd => nd.AncestorsAndSelf().OfType<AssemblyTreeNode>().Any(
-                //        a => oldAssemblies.Contains(a.LoadedAssembly))));
+                history.RemoveAll(n => n.TreeNodes.Any(
+                    nd => nd.AncestorsAndSelf().OfType<AssemblyTreeNode>().Any(
+                        a => oldAssemblies.Contains(a.LoadedAssembly))));
             }
             if (CurrentAssemblyListChanged != null)
                 CurrentAssemblyListChanged(this, e);
@@ -286,33 +292,34 @@
             }
         }
 
+        bool ignoreDecompilationRequests = false;
+
         void DecompileSelectedNodes(DecompilerTextViewState state = null, bool recordHistory = true)
         {
-            if (recordHistory) {
+			if (ignoreDecompilationRequests)
+				return;
+
+            if (recordHistory)
+            {
                 var dtState = decompilerTextView.GetState();
-                if(dtState != null)
+                if (dtState != null)
                     history.UpdateCurrent(new NavigationState(dtState));
                 history.Record(new NavigationState(treeView.SelectedItems.OfType<SharpTreeNode>()));
             }
 
             if (treeView.SelectedItems.Count == 1)
             {
-                var node = treeView.SelectedItem as ILSpyTreeNode;
+                ILSpyTreeNode node = treeView.SelectedItem as ILSpyTreeNode;
                 if (node != null && node.View(decompilerTextView))
                     return;
             }
-
-            decompilerTextView.Decompile(this.decompiledLanguage, this.SelectedNodes, new DecompilationOptions(){ TextViewState = state });
+            decompilerTextView.Decompile(this.decompiledLanguage, this.SelectedNodes, new DecompilationOptions() { TextViewState = state });
         }
+
         IEnumerable<ILSpyTreeNode> SelectedNodes
         {
             get
             {
-                // If nothing has been selected in the tree, just show all of the code contained in the query.
-                if (treeView.SelectedItem == null)
-                {
-                    return this.GetDefaultModuleTypes();
-                }
                 return treeView.GetTopLevelSelection().OfType<ILSpyTreeNode>();
             }
         }
@@ -405,7 +412,7 @@
 				history.UpdateCurrent(new NavigationState(dtState));
 			var newState = forward ? history.GoForward() : history.GoBack();
 			
-            //ignoreDecompilationRequests = true;
+            ignoreDecompilationRequests = true;
 			treeView.SelectedItems.Clear();
 			foreach (var node in newState.TreeNodes)
 			{
@@ -413,7 +420,7 @@
 			}
 			if (newState.TreeNodes.Any())
 				treeView.FocusNode(newState.TreeNodes.First());
-            //ignoreDecompilationRequests = false;
+            ignoreDecompilationRequests = false;
 			DecompileSelectedNodes(newState.ViewState, false);
 		}
 
@@ -434,23 +441,7 @@
                         openPos++;
                     }
                 }
-                else if (commandGroup.Key == "Open")
-                {
-                    foreach (var command in commandGroup)
-                    {
-                        toolBar.Items.Insert(openPos++, MakeToolbarItem(command));
-                    }
-                }
-                else
-                {
-                    toolBar.Items.Add(new Separator());
-                    foreach (var command in commandGroup)
-                    {
-                        toolBar.Items.Add(MakeToolbarItem(command));
-                    }
-                }
             }
-
         }
 		Button MakeToolbarItem(Lazy<ICommand, IToolbarCommandMetadata> command)
 		{
