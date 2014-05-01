@@ -1,6 +1,6 @@
 ##LINQPadSpy
 
-LINQPadSpy shows decompiled sources from queries which have been compiled by LINQPad allowing one to see any additional compiler generated code.
+LINQPadSpy shows decompiled sources from queries which have been compiled by LINQPad allowing one to see any additional compiler generated code. [Download the latest release](http://vincpa.github.io/linqpadspy)
 
 ![LINQPadSpy Screenshot](https://github.com/vincpa/linqpadspy/raw/master/LINQPadSpy.JPG)
 
@@ -39,6 +39,4 @@ I have a bunch of features I'd like to implement and they're all listed on the p
 
 ### Known issues
 
-* On occasion you'll get a COM interop exception.
-* Selecting mscorlib from the assembly list will generate an exception.
 * The first decompilation can be slow but will be quicker thereafter.
