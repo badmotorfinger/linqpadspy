@@ -313,7 +313,10 @@
                 if (node != null && node.View(decompilerTextView))
                     return;
             }
-            decompilerTextView.Decompile(this.decompiledLanguage, this.SelectedNodes, new DecompilationOptions() { TextViewState = state });
+
+            Options.TextViewState = state;
+
+            decompilerTextView.Decompile(this.decompiledLanguage, this.SelectedNodes, Options);
         }
 
         IEnumerable<ILSpyTreeNode> SelectedNodes
