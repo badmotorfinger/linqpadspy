@@ -1,6 +1,6 @@
 ##LINQPadSpy
 
-LINQPadSpy shows decompiled sources from queries which have been compiled by LINQPad allowing one to see any additional compiler generated code. [Download the latest release](http://vincpa.github.io/linqpadspy)
+LINQPadSpy shows decompiled sources from queries which have been compiled by LINQPad allowing one to see any additional compiler generated code. [Download the latest release](http://vincpa.github.io/linqpadspy).
 
 ![LINQPadSpy Screenshot](https://github.com/vincpa/linqpadspy/raw/master/LINQPadSpy.JPG)
 
@@ -23,6 +23,8 @@ I have a bunch of features I'd like to implement and they're all listed on the p
 * Display assembly and class heirarchy browser.
 
 ### Getting the plugin to work
+
+Unless you plan on making changes and compiling the source, your better off downloading the precompiled binaries.  [Download the latest release here](http://vincpa.github.io/linqpadspy).
 
 1. Clone the repository `git clone --recursive https://github.com/vincpa/linqpadspy.git`
 
