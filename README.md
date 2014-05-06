@@ -1,8 +1,8 @@
 ##LINQPadSpy
 
-LINQPadSpy shows decompiled sources from queries which have been compiled by LINQPad allowing one to see any additional compiler generated code. [Download the latest release](http://vincpa.github.io/linqpadspy).
+LINQPadSpy shows decompiled sources from queries which have been compiled by LINQPad allowing one to see any additional compiler generated code. [Download the latest release](http://vincpa.github.io/LINQPadSpy/).
 
-![LINQPadSpy Screenshot](https://github.com/vincpa/linqpadspy/raw/master/LINQPadSpy.JPG)
+![LINQPadSpy Screenshot](https://github.com/vincpa/LINQPadSpy/raw/master/LINQPadSpy.JPG)
 
 ### Goals
 
@@ -24,15 +24,15 @@ I have a bunch of features I'd like to implement and they're all listed on the p
 
 ### Getting the plugin to work
 
-Unless you plan on making changes and compiling the source, your better off downloading the precompiled binaries.  [Download the latest release here](http://vincpa.github.io/linqpadspy).
+Unless you plan on making changes and compiling the source, your better off downloading the precompiled binaries.  [Download the latest release here](http://vincpa.github.io/LINQPadSpy).
 
-1. Clone the repository `git clone --recursive https://github.com/vincpa/linqpadspy.git`
+1. Clone the repository `git clone --recursive https://github.com/vincpa/LINQPadSpy.git`
 
-2. cd in to the ilspy directory `cd path\to\cloned\repository\linqpadspy\ilspy`
+2. cd in to the ilspy directory `cd path\to\cloned\repository\LINQPadSpy\ilspy`
 
-3. Set the correct HEAD revision for the linqpadspy branch `git checkout linqpadspy`
+3. Set the correct HEAD revision for the LINQPadSpy branch `git checkout LINQPadSpy`
 
-4. Open the solution in Visual Studio 2012/2013 and add reference to LINQPad.exe to the the LinqPadSpy.Plugin project. Then compile the solution in Release mode and copy the binaries to the LINQPad plugins directory. Be sure to copy all DLL and EXE files except for LINQPad.exe.
+4. Open the solution in Visual Studio 2012/2013 and add reference to LINQPad.exe to the the LINQPadSpy.Plugin project. Then compile the solution in Release mode and copy the binaries to the LINQPad plugins directory. Be sure to copy all DLL and EXE files except for LINQPad.exe.
 
 ### Compatibility
 
