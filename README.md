@@ -1,4 +1,4 @@
-##LINQPadSpy [![Build status](https://ci.appveyor.com/api/projects/status/8sgstqglwk834lr6)](https://ci.appveyor.com/project/VincePanuccio/linqpadspy)
+##LINQPadSpy
 
 LINQPadSpy shows decompiled sources from queries which have been compiled by LINQPad allowing one to see any additional compiler generated code. [Download the latest release](http://vincpa.github.io/linqpadspy/).
 
