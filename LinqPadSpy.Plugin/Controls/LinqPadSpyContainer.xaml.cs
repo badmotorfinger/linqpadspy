@@ -215,11 +215,41 @@
             NamespaceTreeNode linqPadNamespaceNode = namespaceNodes[String.Empty];
             linqPadNamespaceNode.IsExpanded = true;
 
-            var queryNode = (TypeTreeNode)linqPadNamespaceNode.Children.First(c => String.Equals(c.Text, "UserQuery")); 
+            string linqpadGeneratedClassName = this.GetLinqPadClassName(linqPadNamespaceNode);
+
+            var queryNode = (TypeTreeNode)linqPadNamespaceNode.Children.First(c => Equals(c.Text, linqpadGeneratedClassName)); 
             
             queryNode.IsExpanded = true;
 
             treeView.SelectedItems.Add(queryNode);
+        }
+
+        string GetLinqPadClassName(NamespaceTreeNode namespaceTreeNode)
+        {
+            string linqpadGeneratedClassName = "UserQuery";
+            
+            var classNode = 
+                namespaceTreeNode.Children.FirstOrDefault(c => Equals(c.Text, linqpadGeneratedClassName));
+
+            if (classNode == null)
+            {
+                string queryClassId = LinqPadUtil.GetQueryIdentifier(this.assemblyPath);
+
+                var linqPadClass =
+                    namespaceTreeNode.Children.FirstOrDefault(c => c.Text.ToString().Contains(queryClassId));
+
+                if (linqPadClass != null)
+                {
+                    return linqPadClass.Text.ToString();
+                }
+            }
+            else
+            {
+                return classNode.Text.ToString();
+            }
+
+            // If the LINQPad query class cannot be found, select something so it loads.
+            return namespaceTreeNode.Children.First().Text.ToString();
         }
 
         void ShowAssemblyList()

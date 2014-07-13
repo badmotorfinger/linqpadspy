@@ -101,9 +101,34 @@
 
 
             var latestQuery =
-                latestDirectory.First().GetFiles("*.dll").OrderByDescending(file => file.LastWriteTimeUtc).First();
+                latestDirectory.First()
+                               .GetFiles()
+                               .Where(fileInfo => fileInfo.Extension == ".dll" || fileInfo.Extension == ".exe")
+                               .OrderByDescending(file => file.LastWriteTimeUtc).First();
 
             return latestQuery.FullName;
+        }
+
+        /// <summary>
+        /// Gets the LINQPad query identifier from the file name.
+        /// </summary>
+        public static string GetQueryIdentifier(string assemblyPath)
+        {
+            string fileName = Path.GetFileName(assemblyPath);
+
+            int indexfOfSeparator = fileName.IndexOf('_');
+
+            if (indexfOfSeparator > -1)
+            {
+                int indexOfExtension = fileName.IndexOf('.', indexfOfSeparator);
+
+                if (indexOfExtension > -1)
+                {
+                    return fileName.Substring(indexfOfSeparator + 1, indexOfExtension - 1 - indexfOfSeparator);
+                }
+            }
+
+            throw new Exception("Could not get the LINQpad assembly identifier.");
         }
     }
 }
