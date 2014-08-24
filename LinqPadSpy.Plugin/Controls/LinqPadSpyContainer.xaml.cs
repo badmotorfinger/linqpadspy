@@ -15,6 +15,7 @@
 
     using ICSharpCode.Decompiler;
     using ICSharpCode.ILSpy;
+    using ICSharpCode.ILSpy.Options;
     using ICSharpCode.ILSpy.TextView;
     using ICSharpCode.ILSpy.TreeNodes;
     using ICSharpCode.TreeView;
@@ -26,44 +27,6 @@
     /// </summary>
     public partial class LinqPadSpyContainer : UserControl, ISpyWindow
     {
-        /// <summary>
-        /// Gets the decompilation options. There should be no need to change these as the
-        /// purpose of this plugin is to show what the compiler is generating.
-        /// </summary>
-        /// <value>
-        /// The options.
-        /// </value>
-        static DecompilationOptions Options
-        {
-            get
-            {
-                return new DecompilationOptions()
-                {
-                    DecompilerSettings = new DecompilerSettings()
-                    {
-                        // False = Show compiler generated code
-                        AlwaysGenerateExceptionVariableForCatchBlocks = true,
-                        AnonymousMethods = false,
-                        AsyncAwait = false,
-                        AutomaticEvents = true,
-                        AutomaticProperties = false,
-                        ExpressionTrees = true,
-                        ForEachStatement = false,
-                        FullyQualifyAmbiguousTypeNames = true,
-                        IntroduceIncrementAndDecrement = true,
-                        LockStatement = true,
-                        MakeAssignmentExpressions = true,
-                        UseDebugSymbols = true,
-                        YieldReturn = false,
-                        QueryExpressions = true,
-                        SwitchStatementOnString = false
-                    },
-                    TextViewState = new DecompilerTextViewState()
-                };
-            }
-        }
-
-
 		readonly NavigationHistory<NavigationState> history = new NavigationHistory<NavigationState>();
 
         public event NotifyCollectionChangedEventHandler CurrentAssemblyListChanged;
@@ -344,9 +307,7 @@
                     return;
             }
 
-            Options.TextViewState = state;
-
-            decompilerTextView.Decompile(this.decompiledLanguage, this.SelectedNodes, Options);
+            decompilerTextView.Decompile(this.decompiledLanguage, this.SelectedNodes, new DecompilationOptions() { TextViewState = state });
         }
 
         IEnumerable<ILSpyTreeNode> SelectedNodes
@@ -365,7 +326,7 @@
 
             CompositionContainerBuilder.Container.ComposeParts(decomTextView);
 
-            decomTextView.Decompile(this.decompiledLanguage, typesToDecompile, Options);
+            decomTextView.Decompile(this.decompiledLanguage, typesToDecompile, new DecompilationOptions() { TextViewState = new DecompilerTextViewState() });
 
             return decomTextView;
         }
@@ -490,5 +451,26 @@
 			};
 		}
 		#endregion
+
+        OptionsDialog dialog;
+        void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (dialog == null)
+            {
+                dialog = new OptionsDialog(CompositionContainerBuilder.Container);
+
+                dialog.IsVisibleChanged += DialogOnIsVisibleChanged;
+            }
+
+            dialog.Show();
+        }
+
+        void DialogOnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            if (!((OptionsDialog)sender).IsVisible)
+            {
+                DecompileSelectedNodes();
+            } 
+        }
     }
 }
