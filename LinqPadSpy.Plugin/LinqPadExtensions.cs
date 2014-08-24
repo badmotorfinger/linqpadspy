@@ -11,10 +11,6 @@
     {
         public static void DumpDasm(this object value)
         {
-            if (value == null) return;
-
-            value.Dump(); // Execute LINQPads standard dump.
-
             // Determine the language (Doesn't work when two copies of LINQPad are open)
             Language linqPadSelectedLanguage = LinqPadUtil.GetLanguageForQuery();
 
