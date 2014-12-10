@@ -18,7 +18,6 @@ I have a bunch of features I'd like to implement and they're all listed on the p
 ### Current feature set
 
 * Decompiles source code when the query contains a `this.DumpDasm()` (C#) or `Me.DumpDasm()` (VB.NET) in the execution path. You can also decompile an F# compiled assembly but the decompiled source will be in C#.
-* Detects which language is being used in LINQPad and shows the decompiled source in that language. Currently only VB.NET and C# are supported.
 * Ability to change the decompiled source language from C# to VB.NET or IL without rerunning your query.
 * Display assembly and class heirarchy browser.
 
