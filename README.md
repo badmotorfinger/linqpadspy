@@ -1,5 +1,7 @@
 ##LINQPadSpy
 
+[![Join the chat at https://gitter.im/vincpa/linqpadspy](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/vincpa/linqpadspy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 LINQPadSpy shows decompiled sources from queries which have been compiled by LINQPad allowing one to see any additional compiler generated code. [Download the latest release](http://vincpa.github.io/linqpadspy/).
 
 ![LINQPadSpy Screenshot](https://github.com/vincpa/LINQPadSpy/raw/master/LINQPadSpy.JPG)
